@@ -1,0 +1,38 @@
+from django.urls import path, include
+# from users.views import otp, account_created
+from django.contrib.auth import views as auth_views
+
+from users.views import (StudentListView, StudentCreateView, StudentUpdateView, StudentDeleteView,
+                         ProfessorListView, ProfessorCreateView, ProfessorUpdateView, ProfessorDeleteView,
+                         ParentListView, ParentCreateView, ParentUpdateView, ParentDeleteView,
+                         ExamEnrollListView, ExamEnrollCreateView, ExamEnrolledUpdateView, ExamEnrolledDeleteView)
+
+urlpatterns = [
+    # path('account_created/', account_created, name='account_created'),
+
+    # path('login/', include([
+    #     path('', auth_views.LoginView.as_view(template_name='users/login.html'), name = 'login'),
+    #     path('login_redirect/', otp, name = 'login-redirect'),
+    # ])),
+    # path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name = 'logout'),
+
+    path('students', StudentListView.as_view(), name='students-list'),
+    path('student/new/', StudentCreateView.as_view(), name='students-create'),
+    path('student/<int:pk>/update/', StudentUpdateView.as_view(), name='students-update'),
+    path('student/<int:pk>/delete/', StudentDeleteView.as_view(), name='students-delete'),
+
+    path('professors', ProfessorListView.as_view(), name='professors-list'),
+    path('professor/new/', ProfessorCreateView.as_view(), name='professors-create'),
+    path('professor/<int:pk>/update/', ProfessorUpdateView.as_view(), name='professors-update'),
+    path('professor/<int:pk>/delete/', ProfessorDeleteView.as_view(), name='professors-delete'),
+
+    path('parents', ParentListView.as_view(), name='parents-list'),
+    path('parent/new/', ParentCreateView.as_view(), name='parents-create'),
+    path('parent/<int:pk>/update/', ParentUpdateView.as_view(), name='parents-update'),
+    path('parent/<int:pk>/delete/', ParentDeleteView.as_view(), name='parents-delete'),
+
+    path('exams/<int:exam_id>/enrolled/', ExamEnrollListView.as_view(), name='enrolled-students-list'),
+    path('exams/create/', ExamEnrollCreateView.as_view(), name='enrolled-students-create'),
+    path('exams/<int:pk>/update/', ExamEnrolledUpdateView.as_view(), name='enrolled-students-update'),
+    path('exams/<int:pk>/delete/', ExamEnrolledDeleteView.as_view(), name='enrolled-students-delete'),
+]

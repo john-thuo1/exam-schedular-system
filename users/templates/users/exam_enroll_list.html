@@ -1,0 +1,50 @@
+{% extends 'exams/base.html' %}
+
+{% block content %}
+    <div class="right_col" role="main">
+            <div class="">
+              <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <div class="x_panel">
+                    <div class="x_title">
+                        <h4 class="text-center"> {{ exam_name }} </h4>
+                        <h5 class="text-center">{{ exam_duration }}</h5>
+                        <div class="clearfix"></div>
+                    </div>
+                  <br>
+                    <div class="x_content">
+                      <table id="enrolled_student-datatable" class="table table-striped table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Enrollment Date</th>
+                            <th>Student Name</th>
+                            <th>Marks</th>
+                            <th class="text-center">Operations</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for enrolled_student in enrolled_students %}
+                                <tr>
+                                    <td>{{ enrolled_student.date_enrolled }}</td>
+                                    <td>{{ enrolled_student.student.get_full_name }}</td>
+                                    <td>{{ enrolled_student.marks }} %</td>
+                                    <td  class="text-center">
+
+                                            <a href="{% url 'enrolled-students-update' enrolled_student.pk %}" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit </a>
+                                            <a href="{% url 'enrolled-students-delete' enrolled_student.pk %}" class="btn btn-danger btn-xs"><i class="fa fa-remove"></i> Delete </a>
+
+                                    </td>
+                                  </tr>
+                            {% endfor %}
+                        </tbody>
+                      </table>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+{% endblock content%}
