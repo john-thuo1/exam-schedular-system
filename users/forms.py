@@ -1,7 +1,56 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import systemUser
 from users.models import Profile, OTP
+
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.db import transaction
+
+from users.models import (Student,Professor,Parent,User)
+
+
+class TeacherSignUpForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
+
+    @transaction.atomic
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.is_teacher = True
+        user.save()
+        professor = Professor.objects.create(user=user)
+        return user
+
+
+class StudentSignUpForm(UserCreationForm):
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.is_student = True
+        user.save()
+        student = Student.objects.create(user=user)
+        return user
+
+class AdminSignUpForm(UserCreationForm):
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.is_parent = True
+        # user.is_staff = True
+        user.save()
+        student = Parent.objects.create(user=user)
+        return user
+
+
 
 
 

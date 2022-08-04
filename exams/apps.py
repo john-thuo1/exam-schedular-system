@@ -1,6 +1,5 @@
 from django.apps import AppConfig
 
-
 # Link to explain where signal handlers should be put 
 # https://stackoverflow.com/questions/2719038/where-should-signal-handlers-live-in-a-django-project#:~:text=If%20you're%20using%20the,happened%20in%20the%20models%20module.
 '''
@@ -39,4 +38,4 @@ class ExamsConfig(AppConfig):
     verbose_name = "exams"
     
     def ready(self):
-        import exams.signals
+        import api.signals

@@ -6,7 +6,7 @@ from django.utils import timezone
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(max_length=500, default="Enter a brief course description")
+    description = models.TextField(max_length=1000, default="Enter a brief course description")
     
 
 
@@ -20,7 +20,8 @@ class Course(models.Model):
 
 class Unit(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField(max_length=500, default="Enter a description of the Unit")
+    description = models.TextField(max_length=1000, default="Enter a description of the Unit")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.name}'
@@ -32,11 +33,10 @@ class Exam(models.Model):
     duration = models.TextField(default="1hr")
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField(default=timezone.now)
-    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
 
     def __str__(self):
-        # {(self.start_date.strftime("%d-%b-%Y %I:%M:%p"))} to {self.end_date.strftime("%d-%b-%Y %I:%M:%p")}
-        return f'{self.unit} Exam at {self.start_time} on {(self.start_date.strftime("%d-%b-%Y"))} for {self.duration} '
+        return f'{self.unit} Exam at {self.start_time} on {(self.start_date.strftime("%d-%b-%Y"))} for {self.duration}'
 
     class Meta:
         verbose_name = "Exam"

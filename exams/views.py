@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse
 
-from django.views.generic import (ListView, CreateView, DeleteView, UpdateView)
+from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 
 from exams.models import Course, Unit, Exam
 
@@ -160,7 +160,7 @@ class ExamDeleteView(DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Delete Exam'
-        exam_name = Exam.objects.get(pk=self.kwargs.get('pk')).name
-        context['message'] = f'Are you sure you want to delete the exam "{exam_name}"'
+        exam_name = Exam.objects.get(pk=self.kwargs.get('pk'))
+        context['message'] = f'Are you sure you want to delete the following exam "{exam_name}"?'
         context['cancel_url'] = 'exams-list'
         return context

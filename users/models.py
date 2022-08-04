@@ -1,28 +1,34 @@
 from uuid import uuid4
 from django.utils import timezone
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
+
 from exams.models import Course, Unit, Exam
 
 
+
+
+class systemUser(User):
+
+    is_student = models.BooleanField(default=False)
+    is_parent = models.BooleanField(default=False)
+    is_professor = models.BooleanField(default=False)
+
+
+
+
 # Create your models here
-class OTP(models.Model):
-    otp_code = models.CharField(null=True, max_length=6)
-    user = models.ForeignKey(User, related_name= 'OTPClient', on_delete=models.CASCADE)
-    date_created = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return f'{self.otp_code}'
-
-    class Meta:
-        verbose_name_plural = 'OTP'
 
 
-class Student(User):
+
+class Student(systemUser):
     # uniqueId = models.CharField(null=True, blank=True, max_length=100)
 
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    phone_number = models.IntegerField(default=+254711111111)
 
-    course = models.ForeignKey(Course, on_delete=models.PROTECT)
+
 
     def __str__(self):
         return f'{self.get_full_name()}'
@@ -38,7 +44,7 @@ class Student(User):
 
 class Professor(User):
 
-    unit = models.ForeignKey(Unit, on_delete=models.PROTECT)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     phone_number = models.IntegerField(default=+254711111111)
 
 
@@ -53,7 +59,7 @@ class Professor(User):
 
 class Parent(User):
 
-    students = models.ForeignKey('Student', on_delete=models.PROTECT)
+    students = models.ForeignKey('Student', on_delete=models.CASCADE)
     phone_number = models.IntegerField(default=0)
 
     def __str__(self):
@@ -66,8 +72,8 @@ class Parent(User):
 
 
 class ExamEnrolled(models.Model):
-    student = models.ForeignKey('Student', on_delete=models.PROTECT)
-    exams = models.ForeignKey(Exam, on_delete=models.PROTECT)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    exams = models.ForeignKey(Exam, on_delete=models.CASCADE)
     marks = models.IntegerField(default=0)
     date_enrolled = models.DateTimeField(default=timezone.now)
 
@@ -77,6 +83,15 @@ class ExamEnrolled(models.Model):
     class Meta:
         verbose_name_plural = "ExamsEnrolled"
 
+class OTP(models.Model):
+    otp_code = models.CharField(null=True, max_length=6)
+    user = models.ForeignKey(Exam, related_name= 'OTPClient', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.otp_code}'
+
+    class Meta:
+        verbose_name_plural = 'OTP'
 
 
 class Profile(models.Model):

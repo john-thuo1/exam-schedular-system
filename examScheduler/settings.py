@@ -23,7 +23,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['127.0.0.1', 'a33d-197-232-140-188.eu.ngrok.io']
+ALLOWED_HOSTS = ['127.0.0.1', 'a72d-197-232-140-188.eu.ngrok.io']
 
 
 # Application definition
@@ -51,6 +51,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'examScheduler.urls'
+
+
 
 TEMPLATES = [
     {
@@ -122,7 +124,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
 
-LOGIN_REDIRECT_URL = 'base'
+LOGIN_REDIRECT_URL = 'login-redirect'
+
 # the route the user will automatically be redirected if they access a page without logging in
 LOGIN_URL = 'login'
 

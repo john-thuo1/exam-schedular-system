@@ -1,26 +1,25 @@
+
 from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
-
+from api.generate_code import get_code
 from users.forms import UserRegisterForm, UserUpdateForm, OTPForm,ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 from users.models import OTP, Student, Professor, Parent, ExamEnrolled
 from django.contrib import messages
-from users.send_message import send
-from users.generate_code import get_code
 from django.contrib.auth import login, logout
-
+# from api.signals import booking_code
 from django.views.generic import (ListView, CreateView, DeleteView, UpdateView)
 
 # from django.contrib.auth.mixins import LoginRequiredMixin
 from exams.models import Exam
 from django.shortcuts import get_object_or_404
-import exams.send_message as send_message
+import api.send_message as send_message
 
 
 # the view to be displayed after a user successfully registers
 def account_created(request):
-    return render(request, 'users/account_created.html')
+    return render(request, 'users/account_created.html')    
 
 
 @login_required
@@ -49,14 +48,13 @@ def profile(request):
 
 class StudentCreateView(CreateView):
     model = Student
-    fields = ['first_name', 'last_name', 'email', 'username', 'course']
+    fields = ['first_name', 'last_name', 'email', 'username', 'course', 'phone_number']
     template_name = 'users/student_detail.html'
 
     def get_success_url(self):
         return reverse('students-list')
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['table_title'] = 'Add New Student'
         return context
@@ -64,14 +62,13 @@ class StudentCreateView(CreateView):
 
 class StudentUpdateView(UpdateView):
     model = Student
-    fields = ['first_name', 'last_name', 'email', 'username', 'course']
+    fields = ['first_name', 'last_name', 'email', 'username', 'course', 'phone_number']
     template_name = 'users/student_detail.html'
 
     def get_success_url(self):
         return reverse('students-list')
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['table_title'] = 'Update Student'
         return context
@@ -92,11 +89,10 @@ class StudentDeleteView(DeleteView):
         return reverse('students-list')
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['title'] = 'Delete Student'
         student_name = Student.objects.get(pk=self.kwargs.get('pk')).get_full_name()
-        context['message'] = f'Are you sure you want to delete the student "{student_name}"'
+        context['message'] = f'Are you sure you want to delete the following student: "{student_name}"?'
         context['cancel_url'] = 'students-list'
         return context
 
@@ -113,7 +109,6 @@ class ProfessorCreateView(CreateView):
         return reverse('professors-list')
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['table_title'] = 'Add New Professor'
         return context
@@ -128,7 +123,6 @@ class ProfessorUpdateView(UpdateView):
         return reverse('professors-list')
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['table_title'] = 'Professor'
         return context
@@ -152,7 +146,7 @@ class ProfessorDeleteView(DeleteView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Delete Professor'
         professor_name = Professor.objects.get(pk=self.kwargs.get('pk')).get_full_name()
-        context['message'] = f'Are you sure you want to delete Professor "{professor_name}" ?'
+        context['message'] = f'Are you sure you want to delete the following Professor "{professor_name}" ?'
         context['cancel_url'] = 'professors-list'
         return context
 
@@ -169,7 +163,6 @@ class ParentCreateView(CreateView):
         return reverse('parents-list')
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['table_title'] = 'Add New Parent'
         return context
@@ -184,7 +177,6 @@ class ParentUpdateView(UpdateView):
         return reverse('parents-list')
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['table_title'] = 'Update Parent'
         return context
@@ -205,11 +197,10 @@ class ParentDeleteView(DeleteView):
         return reverse('parents-list')
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['title'] = 'Delete Parent'
         parent_name = Parent.objects.get(pk=self.kwargs.get('pk')).get_full_name()
-        context['message'] = f'Are you sure you want to delete the parent "{parent_name}"'
+        context['message'] = f'Are you sure you want to delete the following parent "{parent_name}"?'
         context['cancel_url'] = 'parents-list'
         return context
 
@@ -223,12 +214,12 @@ class ExamEnrollListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        enrolled_students = ExamEnrolled.objects.filter(exams_id=self.kwargs.get('exam_id'))
+        registered_students = ExamEnrolled.objects.filter(exams_id=self.kwargs.get('exam_id'))
         exam_name = get_object_or_404(Exam, pk=self.kwargs.get('exam_id'))
-        context[
-            'exam_duration'] = f'From: {exam_name.start_date.strftime("%d-%b-%Y %I:%M:%p")} - To: {exam_name.end_date.strftime("%d-%b-%Y %I:%M:%p")}'
-        context['enrolled_students'] = enrolled_students
-        context['exam_name'] = f'{exam_name.unit.name} Exam List'
+        
+        context['enrolled_students'] = registered_students
+        context['exam_name'] = f'{exam_name.unit.name} Exam Student List'
+        # context['Exam Booking Code'] = booking_code
         return context
 
 
@@ -242,8 +233,8 @@ class ExamEnrollCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['table_title'] = f'Student Exam Enrollment'
-        context['btn_label'] = 'Enroll'
+        context['table_title'] = f'Student Exam Registration'
+        context['btn_label'] = 'Register'
         return context
 
 
@@ -256,7 +247,6 @@ class ExamEnrolledUpdateView(UpdateView):
         return reverse('enrolled-students-list', kwargs={'exam_id': self.kwargs.get('pk')})
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['table_title'] = 'Update Student Grade'
         context['btn_label'] = 'Update'
@@ -272,8 +262,12 @@ class ExamEnrolledUpdateView(UpdateView):
             student = self.get_object().student
             exam = self.get_object().exams
             parent = student.parent_set.first()
-            message = f'{student.get_full_name()} got {request.POST.get("marks")}% in {exam.unit.name} Exam'
-            send_message.send(parent.phone_number, message)
+            message_to_parent = f'Dear Parent,\n'\
+              f'Your Child, {student.get_full_name()} scored {request.POST.get("marks")}% in {exam.unit.name} Exam for {exam.unit.course} Course.'
+            message_to_student = f'Dear {student.get_full_name()},\n'\
+              f'You scored  {request.POST.get("marks")}% in {exam.unit.name} Exam for {exam.unit.course} Course.'
+            send_message.send(student.phone_number, message_to_student)
+            send_message.send(parent.phone_number, message_to_parent)
 
         return redirect('enrolled-students-list', exam_id=exam_enrolled.exams_id)
 
@@ -286,64 +280,12 @@ class ExamEnrolledDeleteView(DeleteView):
         return reverse('exams-list')
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['title'] = 'Delete Student Enrollment and Grades'
         exam_enrolled = ExamEnrolled.objects.get(pk=self.kwargs.get('pk'))
         context[
-            'message'] = f'Are you sure you want to remove student "{exam_enrolled.student.get_full_name()}" from ' \
-                         f'exam list '
+            'message'] = f'Are you sure you want to remove "{exam_enrolled.student.get_full_name()}" from the exam list ?'
         context['cancel_url'] = 'exams-list'
         return context
 
 
-# def otp(request):
-#     if request.method == 'POST':
-#         form = OTPForm(request.POST)
-#         if form.is_valid():
-
-#             otp_code = form.cleaned_data['otp_code']
-#             user_id = request.POST.get("user_id", "0")
-            
-       
-#             saved_otp_code = OTP.objects.filter(user_id=user_id,otp_code=otp_code).count()
-
-#             if saved_otp_code > 0:
-#                 user = Parent.objects.get(pk=user_id)
-#                 login(request, user)
-
-#                 messages.success(request, f'Log In Successful')
-#                 return redirect('home')
-            
-#             messages.success(request, f'Invalid Code')
-#             return redirect('login')
-#     else:
-#         user_id = request.user.id
-#         # get the phone number of the logged in user
-#         phone_number = User.objects.filter(username=request.user.username).first().phone_number
-#         otp_code = get_code()
-
-#         # check if there is any OTP codes related to the currently logged in user in the OTP table
-#         otp_data = OTP.objects.filter(user=request.user)
-
-#         # if they are more than 0
-#         if otp_data.count() > 0:
-#             # delete all the related OTP codes
-#             otp_data.delete()
-        
-#         # save the genertaed OTP code and related user in the OTP Table
-#         OTP.objects.create(user=request.user,otp_code=otp_code)
-
-#         # send the OTP code to the user's mobile phone
-#         send(phone_number=phone_number,message=f"Log In Code: {otp_code}")
-
-#         # generate the OTP form to be filled in by the user
-#         form = OTPForm()
-
-#         # log the user out (in the background), so that you can log them in once they enter correct OTP Password
-#         logout(request)
-
-#         # pass the OTP form and the user id into the HTML template as you won't access once you logout a user
-#         context = {'form': form, 'user_id': user_id}
-
-#     return render(request, 'users/otp.html', context)
