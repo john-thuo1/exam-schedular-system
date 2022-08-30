@@ -13,7 +13,9 @@ def send(phone_number, message="Hi from Africa's Talking"):
         "Accept": "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
         # enter your api key here
-        'apiKey': 'e1afe82a388175d7f467177acb58dd039ba0135541ae1987a4d9d88455d07da3'
+        #e.g 'apiKey': 'e1afe82a388175d7f4230297acb58dd039ba0135541ae1987a4d9d88455d07da3'
+
+        'apiKey': '********************************************************************'
     }
 
     req = requests.post('https://api.sandbox.africastalking.com/version1/messaging', data=payload, headers=header)
