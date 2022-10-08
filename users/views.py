@@ -1,26 +1,16 @@
 
 from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
-from django.contrib.auth.models import User
-from api.generate_code import get_code
-from users.forms import UserRegisterForm, UserUpdateForm, OTPForm,ProfileUpdateForm
+from users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
-from users.models import OTP, Student, Professor, Parent, ExamEnrolled
+from users.models import Student, Professor, Parent, ExamEnrolled
 from django.contrib import messages
-from django.contrib.auth import login, logout
-# from api.signals import booking_code
 from django.views.generic import (ListView, CreateView, DeleteView, UpdateView)
 
-# from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from exams.models import Exam
 from django.shortcuts import get_object_or_404
-import api.send_message as send_message
-
-
-# the view to be displayed after a user successfully registers
-def account_created(request):
-    return render(request, 'users/account_created.html')    
-
+import api.send_message as send_message  
 
 @login_required
 def profile(request):
@@ -41,7 +31,6 @@ def profile(request):
         'p_form': p_form
     }
     return render(request, 'users/profile.html', context=context)
-
 
 # -------------------------------------------------------------------------------------------------------------------------
 # Student Views

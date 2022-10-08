@@ -1,5 +1,4 @@
 from django.urls import path, include
-from users.views import account_created
 from django.contrib.auth import views as auth_views
 
 from users.views import (StudentListView, StudentCreateView, StudentUpdateView, StudentDeleteView,
@@ -8,13 +7,7 @@ from users.views import (StudentListView, StudentCreateView, StudentUpdateView, 
                         ParentListView, ParentCreateView, ParentUpdateView, ParentDeleteView)
 
 urlpatterns = [
-    path('account_created/', account_created, name='account_created'),
-
-    path('login/', include([
-        path('', auth_views.LoginView.as_view(template_name='users/login.html'), name = 'login'),
-    ])),
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name = 'logout'),
-    
+   
 
     path('student/new/', StudentCreateView.as_view(), name='students-create'),
     path('student/<int:pk>/update/', StudentUpdateView.as_view(), name='students-update'),
