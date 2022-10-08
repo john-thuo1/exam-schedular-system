@@ -177,8 +177,8 @@
 
                           <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
                           {% else %}
-                          <a class="nav-link" href="{% url 'login' %}">Log In</a>
-                          <a class="nav-link" href="{% url 'client-add' %}">Sign Up</a>
+                          {% comment %} <a class="nav-link" href="{% url 'login' %}">Log In</a> {% endcomment %}
+                          {% comment %} <a class="nav-link" href="{% url 'client-add' %}">Sign Up</a> {% endcomment %}
 
                           
                           {% endif %}
