@@ -1,5 +1,5 @@
-
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib import messages
 from users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
@@ -7,11 +7,30 @@ from users.models import Student, Professor, Parent, ExamEnrolled
 from django.contrib import messages
 from django.views.generic import (ListView, CreateView, DeleteView, UpdateView)
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.contrib.auth.mixins import LoginRequiredMixin
 from exams.models import Exam
 from django.shortcuts import get_object_or_404
 import api.send_message as send_message  
 
+# Create your views here.
+def register(request):
+    if request.method == 'POST':
+        # Create a form that has request.POST
+        form = UserRegisterForm(request.POST)
+        # Check if the data submitted in the form is valid
+        
+        if form.is_valid():
+            # Save the user information
+            form.save()
+            # username = form.cleaned_data.get('username')            
+            username = form.cleaned_data['username']
+            messages.success(request, f'Your Account has been created!{username}, You are now able to log in')
+            # Once signed up, redirect user to blog homepage
+            return redirect('login')
+    else:
+        form = UserRegisterForm()
+
+    return render(request, 'users/register.html', {'form': form})
 @login_required
 def profile(request):
     if request.method == 'POST':
@@ -67,6 +86,7 @@ class StudentListView(ListView):
     model = Student
     template_name = 'users/students_list.html'
     context_object_name = 'students'
+    paginate_by = 5
 
 
 class StudentDeleteView(DeleteView):
@@ -121,6 +141,7 @@ class ProfessorListView(ListView):
     model = Professor
     template_name = 'users/professors_list.html'
     context_object_name = 'professors'
+    paginate_by = 5
 
 
 class ProfessorDeleteView(DeleteView):
@@ -175,6 +196,7 @@ class ParentListView(ListView):
     model = Parent
     template_name = 'users/parents_list.html'
     context_object_name = 'parents'
+    paginate_by = 5
 
 
 class ParentDeleteView(DeleteView):
@@ -207,8 +229,8 @@ class ExamEnrollListView(ListView):
         exam_name = get_object_or_404(Exam, pk=self.kwargs.get('exam_id'))
         
         context['enrolled_students'] = registered_students
+        # context = {'booking_code': booking_code }
         context['exam_name'] = f'{exam_name.unit.name} Exam Student List'
-        # context['Exam Booking Code'] = booking_code
         return context
 
 
@@ -233,6 +255,7 @@ class ExamEnrolledUpdateView(UpdateView):
     template_name = 'users/exam_enroll_detail.html'
 
     def get_success_url(self, *args, **kwargs):
+        # Returns a list of enrolled students and the corresponding exams they are enrolled in.
         return reverse('enrolled-students-list', kwargs={'exam_id': self.kwargs.get('pk')})
 
     def get_context_data(self, **kwargs):
@@ -240,13 +263,15 @@ class ExamEnrolledUpdateView(UpdateView):
         context['table_title'] = 'Update Student Grade'
         context['btn_label'] = 'Update'
         return context
-
     def post(self, request, *args, **kwargs):
         exam_enrolled_id = self.kwargs.get('pk')
         exam_enrolled = ExamEnrolled.objects.get(pk=exam_enrolled_id)
 
         super().post(request, *args, **kwargs)
 
+        # Checks if the 'marks' field has been updated 
+        # It does so by comparing current marks stored in the 'exam_enrolled' object with the marks submitted via POST request
+        # If there is change, proceed to retrieve the student, exam and parent 
         if exam_enrolled.marks != request.POST.get('marks'):
             student = self.get_object().student
             exam = self.get_object().exams
@@ -259,6 +284,13 @@ class ExamEnrolledUpdateView(UpdateView):
             send_message.send(parent.phone_number, message_to_parent)
 
         return redirect('enrolled-students-list', exam_id=exam_enrolled.exams_id)
+
+'''
+The post method is overridden to add functionality to send a text message to the student and their parent if the marks have been updated. 
+The message includes the student's name, the exam name, and the score. Once the message is sent, the view redirects to the enrolled students list for the updated exam.
+
+Overall, this view allows an authorized user to update the marks of a student enrolled in an exam, and sends a notification to the student and their parent if the marks have been changed.
+'''
 
 
 class ExamEnrolledDeleteView(DeleteView):

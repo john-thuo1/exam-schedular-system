@@ -1,0 +1,31 @@
+{% extends "exams/base.html"%}  
+
+{% comment %} Crispy forms are a way to implement bootstrap classes that help with modifying the registration page look from its default look given by USerCreationForm {% endcomment %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <div  class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            {% comment %} fieldset tag is used to group related form information together {% endcomment %}
+            <fieldset class='form-group'>
+                <legend class="border-bottom mb-4">
+                    Join Today
+                </legend>
+
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class='btn btn-outline-info' type='submit'>Sign Up</button>
+            </div> 
+        </form>
+        <div class='border-top pt-3'>
+            <small class='text-muted'>Already have an Account?
+                <a class='ml-2' href="{% url 'login' %}">Sign In</a>
+            </small>
+
+        </div>
+
+    </div>
+
+{% endblock content %}

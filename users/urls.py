@@ -1,14 +1,17 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 
-from users.views import (StudentListView, StudentCreateView, StudentUpdateView, StudentDeleteView,
+
+from users.views import (register,StudentListView, StudentCreateView, StudentUpdateView, StudentDeleteView,
                          ProfessorListView, ProfessorCreateView, ProfessorUpdateView, ProfessorDeleteView,
                         ExamEnrollListView, ExamEnrollCreateView, ExamEnrolledUpdateView, ExamEnrolledDeleteView,
                         ParentListView, ParentCreateView, ParentUpdateView, ParentDeleteView)
 
 urlpatterns = [
    
-
+    path('register/', register, name='register'),
+    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    path('logout/', auth_views.LoginView.as_view(template_name='users/logout.html'), name='logout'),
     path('student/new/', StudentCreateView.as_view(), name='students-create'),
     path('student/<int:pk>/update/', StudentUpdateView.as_view(), name='students-update'),
     path('student/<int:pk>/delete/', StudentDeleteView.as_view(), name='students-delete'),

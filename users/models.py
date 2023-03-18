@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
+from PIL import Image
 
 from exams.models import Course, Unit, Exam
 
@@ -30,7 +31,7 @@ class Professor(User):
 
 class Parent(User):
     students = models.ForeignKey('Student', on_delete=models.CASCADE)
-    phone_number = models.IntegerField(default=0)
+    phone_number = models.IntegerField(default=+254711111111)
 
     def __str__(self):
         return f'{self.get_full_name()}'
@@ -63,5 +64,10 @@ class Profile(models.Model):
     # override the save method in order to get the image saved for resizing
     def save(self, *args, **kwargs):
         super(Profile, self).save(*args, **kwargs)
+        img = Image.open(self.image.path)
+        if img.height > 350 or img.width > 350:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
 
    
