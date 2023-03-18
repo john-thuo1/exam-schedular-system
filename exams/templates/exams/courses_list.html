@@ -2,6 +2,83 @@
 
 {% block content %}
     <div class="right_col" role="main">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2 class="text-center">Courses</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table id="course-datatable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Description</th>
+                                    <th class="text-center">Operations</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for course in courses %}
+                                <tr>
+                                    <td>{{ course.name }}</td>
+                                    <td>{{ course.description }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'courses-update' course.pk %}" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Edit</a>
+                                            <a href="{% url 'courses-delete' course.pk %}" class="btn btn-danger btn-xs"><i class="fa fa-remove"></i> Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% comment %} Pagination Logic {% endcomment %}
+    {% if is_paginated %}
+
+    {% if page_obj.has_previous %}
+      <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+        <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+
+  {% endif %}
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function() {
+            $('#course-datatable').DataTable({
+                "columnDefs": [
+                    { "orderable": false, "targets": 2 }
+                ],
+                "aaSorting": []
+            });
+        });
+    </script>
+{% endblock scripts %}
+{% comment %} {% extends 'exams/base.html' %}
+
+{% block content %}
+    <div class="right_col" role="main">
             <div class="">        
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
@@ -42,4 +119,4 @@
               </div>
             </div>
           </div>
-{% endblock content%}
+{% endblock content%} {% endcomment %}

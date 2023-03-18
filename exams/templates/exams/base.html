@@ -1,15 +1,16 @@
+ {% comment %} Get the Static files  {% endcomment %}
 {% load static %}
+
 <!DOCTYPE html>
 <html>
 <html lang="en">
 
 <head>
-      <script src="{% static 'exams/sidebarCollapse.js' %}"></script>   
 
-      <!-- Bootstrap CSS CDN -->
+      <!-- Load up Bootstrap CSS CDN -->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
       <!-- Our Custom CSS -->
-      <link rel="stylesheet" type="text/css" href="{% static 'exams/main.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'exams/CSS/main.css' %}">
   
   
       <!-- Font Awesome JS -->
@@ -22,7 +23,7 @@
     {% if title %}
       <title>{{ title }}</title>
     {% else %}
-    <title>Exam Scheduler System</title>
+    <title>Exam Scheduling Application</title>
     {% endif %}
 </head>
 
@@ -31,11 +32,10 @@
     <!-- Sidebar  -->
     <nav id="sidebar">
         <div class="sidebar-header">
-            <h3>Exam Scheduler System</h3>
+            <h3>Exam Scheduling Application</h3>
         </div>
 
         <ul class="list-unstyled components">
-            <p>ESS Dashboard</p>
             <li class="active">
                 <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
                 <ul class="collapse list-unstyled" id="homeSubmenu">
@@ -45,7 +45,7 @@
                 </ul>
             </li>
 
-<!-- ----------------------------------------------------------------------------------------------------------------------------------------------------   -->
+<!------------------------------------------------------------------------------------------------------------------------------------------------   -->
             <li>
                 <a href="#coursesSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Courses</a>
                 <ul class="collapse list-unstyled" id="coursesSubmenu">
@@ -112,8 +112,7 @@
         <a class="dropdown-item" href="{% url 'professors-list' %}">View</a>
 
       </li>
-      <!-- <li><hr class="dropdown-divider"></li> -->
-      <li><a class="dropdown-item" href="{% url 'professors-create' %}">Add</a></li>
+     <li><a class="dropdown-item" href="{% url 'professors-create' %}">Add</a></li>
    
   </ul>
 </li> 
@@ -139,9 +138,6 @@
             <li>
                 <a href="" class="download">Generate QR Code</a>
             </li>
-            <li>
-                <a href="" class="article">LogOut</a>
-            </li>
         </ul>
     </nav>
 
@@ -155,7 +151,7 @@
 
                 <button type="button" id="sidebarCollapse" class="btn btn-primary">
                     <i class="fas fa-align-left"></i>
-                    <span>Toggle Sidebar</span>
+                    <span>Toggle Menu</span>
                 </button>
                 <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fas fa-align-justify"></i>
@@ -169,20 +165,16 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'about' %}">About</a>
                         </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="#">Profile</a>
-                        </li> -->
+       
                         <li class="nav-item">
                           {% if user.is_authenticated %}
 
                           <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
                           {% else %}
-                          {% comment %} <a class="nav-link" href="{% url 'login' %}">Log In</a> {% endcomment %}
-                          {% comment %} <a class="nav-link" href="{% url 'client-add' %}">Sign Up</a> {% endcomment %}
-
+                          <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                          <a class="nav-link" href="{% url 'register' %}">Sign Up</a>
                           
                           {% endif %}
-
                         </li> 
                     </ul>
                 </div>
@@ -198,7 +190,11 @@
                     </div>
                 {% endfor %}
             {% endif %}
-              {% block content %}{% endblock %}
+          
+            {% block content %}
+              {% comment %} other pages will override this block {% endcomment %}
+            
+            {% endblock %}
             </div>
           </div>
         </main>
@@ -223,10 +219,17 @@
 
     <!-- jQuery Custom Scroller CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
-
-
-</body>
-
+    <!-- Script for collapsing the sidebar -->
+<script>
+  $(document).ready(function() {
+    // Add event listener to the toggle sidebar button
+    $("#sidebarCollapse").on("click", function() {
+      $("#sidebar").toggleClass("active");
+    });
+  });
+</script>
+  
+  </body>
 </html>
 
 
