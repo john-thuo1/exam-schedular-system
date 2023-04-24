@@ -1,6 +1,6 @@
 '''
 UserRegisterForm is a form for user registration and inherits from UserCreationForm, which is a built-in form provided by Django for creating new users. 
-It adds an email field to the form and specifies which fields from the User model should be used.
+It adds an email field to the form and specifies which fields from the User model should be used
 '''
 
 
