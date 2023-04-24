@@ -23,6 +23,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# set up your own ngrok link 
 ALLOWED_HOSTS = ['127.0.0.1', 'a72d-197-232-140-188.eu.ngrok.io']
 
 
