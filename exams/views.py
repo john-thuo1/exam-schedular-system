@@ -9,7 +9,7 @@ from django.contrib.auth import views as auth_views
 from exams.models import Course, Unit, Exam
 
 # Class Based Views Inherit from the View class or one of its subclasses, 
-# and implement methods such as get() and post() to handle HTTP requests.
+# and implement methods such as get() and post() to handle HTTP requests
 
 # Create your views here.
 @login_required
