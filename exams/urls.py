@@ -1,3 +1,4 @@
+# Exams urls
 from django.urls import path, include
 from exams.views import (home, about, CourseListView, CourseCreateView, CourseUpdateView, CourseDeleteView,
                          UnitListView, UnitCreateView, UnitUpdateView, UnitDeleteView,
