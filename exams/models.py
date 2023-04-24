@@ -3,7 +3,7 @@ from django.utils import timezone
 
 # exams models.
 
-# Each course can have multiple units associated with it
+# Each course can have multiple units associated with
 class Course(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=1000, help_text="Enter a brief description of the course.")
