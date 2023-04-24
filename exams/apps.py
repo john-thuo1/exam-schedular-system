@@ -3,7 +3,7 @@ from django.apps import AppConfig
 
 '''
 The AppConfig class is used to define the configuration of the application.
-It includes attributes such as name, verbose_name, default_auto_field, label, ready(), create_permissions(), etc.
+It includes attributes such as name, verbose_name, default_auto_field, label, ready(), etc.
 The apps.py file contains a class, in this case 'ExamsConfig' that extends the AppConfig class from the django.apps module.
 '''
 class ExamsConfig(AppConfig): 
