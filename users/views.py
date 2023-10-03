@@ -4,7 +4,6 @@ from django.contrib import messages
 from users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 from users.models import Student, Professor, Parent, ExamEnrolled
-from django.contrib import messages
 from django.views.generic import (ListView, CreateView, DeleteView, UpdateView)
 
 # from django.contrib.auth.mixins import LoginRequiredMixin
